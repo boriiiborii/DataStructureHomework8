@@ -28,7 +28,7 @@ int deleteLeafNode(Node* head, int key);  /* delete the leaf node for the key */
 Node* searchRecursive(Node* ptr, int key);  /* search the node for the key */
 Node* searchIterative(Node* head, int key);  /* search the node for the key */
 int freeBST(Node* head); /* free all memories allocated to the tree */
-
+ 
 /* you may add your own defined functions if necessary */
 
 
@@ -43,6 +43,7 @@ int main()
 		printf("\n\n");
 		printf("----------------------------------------------------------------\n");
 		printf("                   Binary Search Tree #1                        \n");
+		printf("          [----- [LeeHwaJin]  [2020037103] -----]               \n"); //학번이름 프린트
 		printf("----------------------------------------------------------------\n");
 		printf(" Initialize BST       = z                                       \n");
 		printf(" Insert Node          = n      Delete Node                  = d \n");
@@ -113,11 +114,11 @@ int initializeBST(Node** h) {
 
 	/* if the tree is not empty, then remove all allocated nodes from the tree*/
 	if(*h != NULL)
-		freeBST(*h);
+		freeBST(*h);//시작할때 초기화시키는 함수라서 할당이 되어있으면 당연히 풀어주어야 함.
 
 	/* create a head node */
 	*h = (Node*)malloc(sizeof(Node));
-	(*h)->left = NULL;	/* root */
+	(*h)->left = NULL;	/* root */ //얘가 널이 아니면 바이너리서치트리가 존재. 널이면 아무값이없음.
 	(*h)->right = *h;
 	(*h)->key = -9999;
 	return 1;
@@ -148,17 +149,20 @@ int insert(Node* head, int key)
 
 int deleteLeafNode(Node* head, int key)
 {
-
+	//리프노드가 아닌걸 삭제하려고 한다면 
+	//"the node [노드값] is not a leaf" 출력
 }
 
 Node* searchRecursive(Node* ptr, int key)
 {
-
+	//print되어야하는게 node[노드값] found at 노드의 주소
+	//또는 cannot find the noe[노드값]
 }
 
 Node* searchIterative(Node* head, int key)
 {
-
+	//print되어야하는게 node[노드값] found at 노드의 주소
+	//또는 cannot find the noe[노드값]
 }
 
 
