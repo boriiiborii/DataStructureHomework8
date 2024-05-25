@@ -31,6 +31,9 @@ int freeBST(Node* head); /* free all memories allocated to the tree */
  
 /* you may add your own defined functions if necessary */
 
+//트리가 비어있는지를 확인하는 메서드. 
+int isEmptyTree(Node* head);
+
 
 int main()
 {
@@ -38,6 +41,9 @@ int main()
 	int key;
 	Node* head = NULL;
 	Node* ptr = NULL;	/* temp */
+
+	//매번 실행할때 initializeBST를 필히 실행해야함으로 main이 시작될때 먼저 실행시켜놓았습니다.
+	initializeBST(&head);
 
 	do{
 		printf("\n\n");
@@ -129,30 +135,134 @@ int initializeBST(Node** h) {
 void inorderTraversal(Node* ptr)
 {
 	//왼쪽노드 프린트 후 부모 프린트, 이후 왼쪽노드 프린트
+	if(ptr != NULL) {
+        inorderTraversal(ptr->left);
+        printf("%d ", ptr->key);
+        inorderTraversal(ptr->right);
+    }
 }
 
 void preorderTraversal(Node* ptr)
 {
 	//부모부터 프린트 한 뒤 왼쪽노드 프린트, 이후 오른쪽 노드 프린트
+	if(ptr != NULL) {
+        printf("%d ", ptr->key);
+        preorderTraversal(ptr->left);
+        preorderTraversal(ptr->right);
+    }
 }
 
 void postorderTraversal(Node* ptr)
 {
 	//왼쪽 child노드 프린트 후 오른쪽 차일드 노드 프린트, 이후 부모 프린트
+	if(ptr != NULL) {
+        postorderTraversal(ptr->left);
+        postorderTraversal(ptr->right);
+        printf("%d ", ptr->key);
+    }
 }
 
 
 int insert(Node* head, int key)
 {
+	//일단 해당 키를 값으로 갖는 노드를 동적할당하여 만들기
+	Node* newNode = (Node*)malloc(sizeof(Node));
+	newNode->key = key;
+	newNode->left = NULL;
+    newNode->right = NULL;
+
 	//바이너리서치트리가 존재하지 않으면 h에 ptr을 연결
-	//존재 한다면 위치를 찾아서 ptr연결
+	if((head->left) == NULL) {
+		head->left = newNode;
+		return 0;
+	}else {
+		//존재 한다면 위치를 찾아서 ptr연결
+		//위치 찾기: 반복하여 헤드보다 크면 오른쪽 작으면 왼쪽으로 .. 들어가서 처리하는 방식 진행예정
+		// 존재한다면 위치를 찾아서 ptr 연결
+		Node* parent = NULL;
+		Node* current = head->left;
+		// current노드가 NULL이 될때까지 돌려서 현재 위치를 찾아감
+		while (current != NULL) {
+			parent = current;
+			//파라미터로 받은 값이 currentKey보다 작을때는 왼쪽으로 current노드를 본인의 left노드로 제새팅하고 while문 재실행
+			if (key < current->key) {
+				current = current->left;
+			//파라미터로 받은 값이 currentKey보다 클때는 오른쪽으로 current노드를 본인의 right노드로 제새팅하고 while문 재실행
+			} else if (key > current->key) {
+				current = current->right;
+			} else {
+				// 입력받았던 키와 current->key의 값과 같은 경우(중복값) 만들었던 노드 해제시키고 끝냄
+				free(newNode);
+				printf("중복된 코드입니다.");
+				//아예 메서드를 끝내버림
+				return 0;
+			}
+    	}
+		// while문이 끝난다면 == currentNode가 NULL이라면 (parent의 key가 들어갈 child노드가 없다면)
+		// 부모노드를 기준으로 키값이 작으면 왼쪽으로 크다면 오른쪽으로 연결
+		if (key < parent->key) {
+			parent->left = newNode;
+		} else {
+			parent->right = newNode;
+		}
+	}
+	return 0;
 }
 
 int deleteLeafNode(Node* head, int key)
 {
-	//리프노드가 아닌걸 삭제하려고 한다면 
-	//"the node [노드값] is not a leaf" 출력
+    // 트리가 비어있는지를 확인
+    if (isEmptyTree(head)) {
+        return 0;
+    }
+
+    Node* parentNode = NULL;
+    Node* currentNode = head->left;
+
+    // 파라미터로 들어왔던 key값의 노드 찾기
+    while (currentNode != NULL) {
+        if (key == currentNode->key) {
+            // 해당 노드를 찾았으므로 break 처리해서 반복문 빠져나오기
+            break;
+        } else if (key < currentNode->key) {
+            parentNode = currentNode;
+            currentNode = currentNode->left;
+        } else {
+            parentNode = currentNode;
+            currentNode = currentNode->right;
+        }
+    }
+
+    // 반복문을 다 돌았는데도 currentNode가 NULL이라면 해당 트리에 key값을 가진 노드가 없는 것임
+    if (currentNode == NULL) {
+        printf("Cannot find the node [%d]\n", key);
+        return 0;
+    }
+
+    // 리프 노드가 아닌 경우
+    if (currentNode->left != NULL || currentNode->right != NULL) {
+        printf("the node [%d] is not a leaf\n", key);
+        return 0;
+    }
+
+    // 리프 노드를 찾았으니 삭제하는 로직
+    if (parentNode != NULL) {
+        if (parentNode->left == currentNode) {
+            parentNode->left = NULL;
+        } else {
+            parentNode->right = NULL;
+        }
+    } else {
+        // 루트노드가 리프노드였을 경우
+        head->left = NULL;
+    }
+	
+	//freeBST를사용할 필요가 없는 이유: 리프노드 확정이라 차일드 노드가 없기 때문에
+	//현재 노드만 free처리 해주면 되니까. 
+    free(currentNode);
+    return 0;
 }
+
 
 Node* searchRecursive(Node* ptr, int key)
 {
@@ -169,7 +279,8 @@ Node* searchIterative(Node* head, int key)
 
 int freeBST(Node* head)
 {
-	//initializeBST()할때 할당 된 노드가 있다면 해제시켜주는 코드 작성해야함    
+	//initializeBST()할때 할당 된 노드가 있다면 해제시켜주는 코드 작성해야함   
+	//말고도 delete노드할때도 해줘야함. 
 
     // 왼쪽과 오른쪽 노드를 해제 한 후 본인(현재파라미터 head)을 해제. 
 	//(모든 노드를 삭제해야하기 때문에 재귀처리)
@@ -178,7 +289,11 @@ int freeBST(Node* head)
     free(head);
 }
 
-
-
-
-
+//트리가 비어있는지를 확인하는 메서드. 
+int isEmptyTree(Node* head) {
+	if (head == NULL || head->left == NULL) {
+        printf("Tree is empty.\n");
+        return 1;
+    }
+	return 0;
+}
