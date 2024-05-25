@@ -169,7 +169,13 @@ Node* searchIterative(Node* head, int key)
 
 int freeBST(Node* head)
 {
-	//initializeBST()할때 할당 된 노드가 있다면 해제시켜주는 코드 작성해야함
+	//initializeBST()할때 할당 된 노드가 있다면 해제시켜주는 코드 작성해야함    
+
+    // 왼쪽과 오른쪽 노드를 해제 한 후 본인(현재파라미터 head)을 해제. 
+	//(모든 노드를 삭제해야하기 때문에 재귀처리)
+    freeBST(head->left);
+    freeBST(head->right);
+    free(head);
 }
 
 
