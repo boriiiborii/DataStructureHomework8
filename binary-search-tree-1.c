@@ -267,13 +267,52 @@ int deleteLeafNode(Node* head, int key)
 Node* searchRecursive(Node* ptr, int key)
 {
 	//print되어야하는게 node[노드값] found at 노드의 주소
-	//또는 cannot find the noe[노드값]
+	//또는 cannot find the node[노드값]
+
+	//ptr이 NULL: 노드가 없을때
+    if (ptr == NULL) {
+        printf("Cannot find the node [%d]\n", key);
+        return NULL;
+    }
+
+	// 헤드에서 연결된 첫번째 노드의 값이 키일 경우 바로 주소를 프린트해주기
+    if (ptr->key == key) {
+        printf("node [%d] found at %p\n", key, ptr);
+        return ptr;
+    }
+    
+    // 재귀적으로 노드의 값을 비교하여 키값과 동일한 노드를 찾는 로직
+    if (key < ptr->key) {
+        return searchRecursive(ptr->left, key);
+    } else {
+        return searchRecursive(ptr->right, key);
+    }
 }
 
 Node* searchIterative(Node* head, int key)
 {
 	//print되어야하는게 node[노드값] found at 노드의 주소
 	//또는 cannot find the noe[노드값]
+
+	// 현재 노드 설정
+    Node* currentNode = head->left;
+
+    // 반복적으로 트리를 탐색해서 key값을 가지고 있는 노드 찾기
+    while (currentNode != NULL) {
+        if (key == currentNode->key) {
+            printf("node [%d] found at %p\n", key, (void*)currentNode);
+			//찾았으면 메서드 탈출 --> 메서드 탈출. 결국 와일문을 다 돌았을때 메서드탈출 하지못헀다는건 해당하는노드가없다는뜻.
+            return currentNode;
+        } else if (key < currentNode->key) {
+            currentNode = currentNode->left;
+        } else {
+            currentNode = currentNode->right;
+        }
+    }
+
+    // 노드를 못찾은 경우(노드가 없을때)
+    printf("Cannot find the node [%d]\n", key);
+    return NULL;
 }
 
 
