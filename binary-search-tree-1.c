@@ -128,23 +128,24 @@ int initializeBST(Node** h) {
 
 void inorderTraversal(Node* ptr)
 {
-
+	//왼쪽노드 프린트 후 부모 프린트, 이후 왼쪽노드 프린트
 }
 
 void preorderTraversal(Node* ptr)
 {
-
+	//부모부터 프린트 한 뒤 왼쪽노드 프린트, 이후 오른쪽 노드 프린트
 }
 
 void postorderTraversal(Node* ptr)
 {
-
+	//왼쪽 child노드 프린트 후 오른쪽 차일드 노드 프린트, 이후 부모 프린트
 }
 
 
 int insert(Node* head, int key)
 {
-
+	//바이너리서치트리가 존재하지 않으면 h에 ptr을 연결
+	//존재 한다면 위치를 찾아서 ptr연결
 }
 
 int deleteLeafNode(Node* head, int key)
@@ -168,7 +169,7 @@ Node* searchIterative(Node* head, int key)
 
 int freeBST(Node* head)
 {
-
+	//initializeBST()할때 할당 된 노드가 있다면 해제시켜주는 코드 작성해야함
 }
 
 
